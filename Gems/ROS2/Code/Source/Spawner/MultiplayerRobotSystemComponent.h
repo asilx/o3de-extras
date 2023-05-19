@@ -8,7 +8,7 @@
 #include <AzCore/Component/TickBus.h>
 
 #include <Multiplayer/IMultiplayerSpawner.h>
-#include <Source/Spawner/IRobotSpawner.h>
+#include "IRobotSpawner.h"
 
 namespace AzFramework
 {

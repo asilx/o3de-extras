@@ -3,8 +3,8 @@
  */
 
 #include <AzCore/Component/TransformBus.h>
-#include <Source/Component/NetworRobotSpawnerComponent.h>
-#include <Source/Spawner/MultiRobotSpawner.h>
+#include "NetworkRobotSpawnerComponent.h"
+#include "MultiRobotSpawner.h"
 
 namespace MultiplayerRobotSample
 {

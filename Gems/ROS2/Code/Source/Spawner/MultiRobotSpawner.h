@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <Source/Spawner/IRobotSpawner.h>
+#include "IRobotSpawner.h"
 
 namespace AzFramework
 {

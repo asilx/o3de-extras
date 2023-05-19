@@ -5,8 +5,8 @@
 
 #include <AzCore/Serialization/SerializeContext.h>
 
-#include <Source/Spawner/NetworkRobotSpawnerComponent.h>
-#include <Source/Spawner/IRobotSpawner.h>
+#include "NetworkRobotSpawnerComponent.h"
+#include "IRobotSpawner.h"
 
 namespace MultiplayerRobotSample
 {
