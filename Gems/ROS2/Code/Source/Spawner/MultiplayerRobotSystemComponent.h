@@ -61,6 +61,10 @@ namespace MultiplayerRobotSample
             AzNetworking::DisconnectReason reason) override;
         ////////////////////////////////////////////////////////////////////////
 
-        AZStd::unique_ptr<MultiplayerSample::IPlayerSpawner> m_playerSpawner;
+        //AZStd::unique_ptr<MultiplayerSample::IPlayerSpawner> m_playerSpawner;
+        AZStd::unordered_map<AZStd::string, AZ::Data::Asset<AzFramework::Spawnable>> m_spawnables;
+        AZ::Transform m_defaultSpawnPose = { AZ::Vector3{ 0, 0, 0 }, AZ::Quaternion{ 0, 0, 0, 1 }, 1.0 };
+        AZStd::string& m_defaultSpawnableName;
+
     };
 } // namespace MultiplayerRobotSample

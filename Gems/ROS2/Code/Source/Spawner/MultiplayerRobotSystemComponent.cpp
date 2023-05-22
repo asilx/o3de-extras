@@ -46,21 +46,22 @@ namespace MultiplayerRobotSample
         }*/
         if (AZ::SerializeContext* serialize = azrtti_cast<AZ::SerializeContext*>(context))
         {
-            serialize->Class<NetworkRobotSpawnerComponent, AZ::Component>()
+            serialize->Class<MultiplayerRobotSystemComponent, AZ::Component>()
                 ->Version(2)
-                ->Field("Spawnables", &NetworkRobotSpawnerComponent::m_spawnables)
-                ->Field("Default spawn point", &NetworkRobotSpawnerComponent::m_defaultSpawnPose);
+                ->Field("Spawnables", &MultiplayerRobotSystemComponent::m_spawnables)
+                ->Field("Default spawn point", &MultiplayerRobotSystemComponent::m_defaultSpawnPose)
+                ->Field("Default spawnable name", &MultiplayerRobotSystemComponent::m_defaultSpawnableName);
 
             if (AZ::EditContext* ec = serialize->GetEditContext())
             {
-                ec->Class<NetworkRobotSpawnerComponent>("ROS2 Multirobot Spawner", "Spawner component")
+                ec->Class<MultiplayerRobotSystemComponent>("ROS2 Multirobot Spawner", "Spawner component")
                     ->ClassElement(AZ::Edit::ClassElements::EditorData, "Manages spawning of robots in configurable locations")
                     ->Attribute(AZ::Edit::Attributes::AppearsInAddComponentMenu, AZ_CRC_CE("Game"))
                     ->Attribute(AZ::Edit::Attributes::Category, "ROS2")
-                    ->DataElement(AZ::Edit::UIHandlers::EntityId, &NetworkRobotSpawnerComponent::m_spawnables, "Spawnables", "Spawnables")
+                    ->DataElement(AZ::Edit::UIHandlers::EntityId, &MultiplayerRobotSystemComponent::m_spawnables, "Spawnables", "Spawnables")
                     ->DataElement(
                         AZ::Edit::UIHandlers::EntityId,
-                        &NetworkRobotSpawnerComponent::m_defaultSpawnPose,
+                        &MultiplayerRobotSystemComponent::m_defaultSpawnPose,
                         "Default spawn pose",
                         "Default spawn pose");
             }
@@ -125,7 +126,60 @@ namespace MultiplayerRobotSample
 
     Multiplayer::NetworkEntityHandle MultiplayerRobotSystemComponent::OnPlayerJoin([[maybe_unused]] uint64_t userId, [[maybe_unused]] const Multiplayer::MultiplayerAgentDatum& agentDatum)
     {
-        const AZStd::pair<Multiplayer::PrefabEntityId, AZ::Transform> entityParams = AZ::Interface<IPlayerSpawner>::Get()->GetNextPlayerSpawn();
+       
+        AZStd::string spawnableName = "MySpawnable"; // Replace "MySpawnable" with the actual spawnable name
+        AZStd::string spawnPointName = "MySpawnPoint"; // Replace "MySpawnPoint" with the actual spawn point name
+
+        auto spawnPoints = GetSpawnPoints();
+
+        if (!m_spawnables.contains(spawnableName))
+        {
+            // Handle the case when the spawnable is not found
+            // You can log an error, send a message to the player, or take any other appropriate action
+            
+            return Multiplayer::InvalidNetworkEntityHandle;
+        }
+
+        if (!m_tickets.contains(spawnableName))
+        {
+            // If a ticket for this spawnable was not created but the spawnable name is correct, create the ticket and then use it to spawn an entity
+            auto spawnable = m_spawnables.find(spawnableName);
+            m_tickets.emplace(spawnable->first, AzFramework::EntitySpawnTicket(spawnable->second));
+        }
+
+        auto spawner = AZ::Interface<AzFramework::SpawnableEntitiesDefinition>::Get();
+
+        AzFramework::SpawnAllEntitiesOptionalArgs optionalArgs;
+
+        AZ::Transform transform;
+
+        if (spawnPoints.contains(spawnPointName))
+        {
+            transform = spawnPoints.at(spawnPointName).pose;
+        }
+        else
+        {
+            // Set the initial pose for the spawned entity
+            transform = { AZ::Vector3(0.0f, 0.0f, 0.0f), AZ::Quaternion::CreateIdentity(), 1.0f };
+        }
+
+        optionalArgs.m_preInsertionCallback = [this, transform, spawnableName](auto id, auto view)
+        {
+            PreSpawn(id, view, transform, spawnableName);
+        };
+
+        spawner->SpawnAllEntities(m_tickets.at(spawnableName), optionalArgs);
+
+        // Retrieve the network entity handle for the spawned entity
+        Multiplayer::NetworkEntityHandle entityHandle = GetNetworkEntityHandleFromSpawnedEntity(); // Replace with the actual function to get the network entity handle
+
+        // Perform any additional operations for the joined player
+
+        return entityHandle;
+
+
+
+        /*const AZStd::pair<Multiplayer::PrefabEntityId, AZ::Transform> entityParams = AZ::Interface<IPlayerSpawner>::Get()->GetNextPlayerSpawn();
 
         Multiplayer::INetworkEntityManager::EntityList entityList = Multiplayer::GetNetworkEntityManager()->CreateEntitiesImmediate(
             entityParams.first, Multiplayer::NetEntityRole::Authority, entityParams.second);
@@ -141,7 +195,7 @@ namespace MultiplayerRobotSample
                 entityParams.first.m_prefabName.GetCStr());
         }
 
-        return controlledEntity;
+        return controlledEntity;*/
     }
 
     void MultiplayerRobotSystemComponent::OnPlayerLeave(
