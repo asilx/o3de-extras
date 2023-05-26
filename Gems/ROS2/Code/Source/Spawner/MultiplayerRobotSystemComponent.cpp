@@ -124,7 +124,7 @@ namespace MultiplayerRobotSample
         return AZ::TICK_PLACEMENT + 2;
     }
 
-    Multiplayer::NetworkEntityHandle MultiplayerRobotSystemComponent::OnPlayerJoin([[maybe_unused]] uint64_t userId, [[maybe_unused]] const Multiplayer::MultiplayerAgentDatum& agentDatum)
+    /*Multiplayer::NetworkEntityHandle MultiplayerRobotSystemComponent::OnPlayerJoin([[maybe_unused]] uint64_t userId, [[maybe_unused]] const Multiplayer::MultiplayerAgentDatum& agentDatum)
     {
        
         AZStd::string spawnableName = "MySpawnable"; // Replace "MySpawnable" with the actual spawnable name
@@ -195,8 +195,90 @@ namespace MultiplayerRobotSample
                 entityParams.first.m_prefabName.GetCStr());
         }
 
-        return controlledEntity;*/
+        return controlledEntity;
+    }*/
+
+    Multiplayer::NetworkEntityHandle MyMultiplayerGemExtension::OnPlayerJoin(uint64_t userId, const Multiplayer::MultiplayerAgentDatum& agentDatum)
+    {
+        AZStd::string spawnableName(agentDatum.name.c_str());
+        AZStd::string spawnPointName(agentDatum.xml.c_str(), agentDatum.xml.size());
+
+        auto spawnPoints = GetSpawnPoints();
+
+        if (!m_spawnables.contains(spawnableName))
+        {
+            // when the spawnable name is not found
+            return nullptr;
+        }
+
+        if (!m_tickets.contains(spawnableName))
+        {
+            // if a ticket for this spawnable was not created but the spawnable name is correct, create the ticket and then use it to
+            // spawn an entity
+            auto spawnable = m_spawnables.find(spawnableName);
+            m_tickets.emplace(spawnable->first, AzFramework::EntitySpawnTicket(spawnable->second));
+        }
+
+        // Get the Multiplayer Gem's spawnable manager
+        Multiplayer::SpawnableEntityManager* spawnableManager = GetSpawnableEntityManager();
+
+        if (!spawnableManager)
+        {
+            // when the spawnable manager is not available
+
+            return nullptr;
+        }
+
+        Multiplayer::SpawnableEntityId spawnableEntityId = spawnableManager->GetSpawnableEntityIdByName(spawnableName);
+
+        if (spawnableEntityId == Multiplayer::InvalidSpawnableEntityId)
+        {
+            // Handle the case when the spawnable entity ID is not found
+
+            return nullptr;
+        }
+
+        AZ::Transform transform;
+
+        if (spawnPoints.contains(spawnPointName))
+        {
+            transform = spawnPoints.at(spawnPointName).pose;
+        }
+        else
+        {
+            transform = { AZ::Vector3(agentDatum.initial_pose.position.x, agentDatum.initial_pose.position.y, agentDatum.initial_pose.position.z),
+                        AZ::Quaternion(
+                            agentDatum.initial_pose.orientation.x,
+                            agentDatum.initial_pose.orientation.y,
+                            agentDatum.initial_pose.orientation.z,
+                            agentDatum.initial_pose.orientation.w),
+                        1.0f };
+        }
+
+        // Get the Multiplayer Gem's entity spawner
+        Multiplayer::EntitySpawner* entitySpawner = GetEntitySpawner();
+
+        if (!entitySpawner)
+        {
+            // Handle the case when the entity spawner is not available
+
+            return nullptr;
+        }
+
+        Multiplayer::NetworkEntityHandle entityHandle = entitySpawner->SpawnEntity(spawnableEntityId, transform);
+
+        if (!entityHandle)
+        {
+            // when entity spawning fails
+
+            return nullptr;
+        }
+
+        //  any additional operations for the spawned robot
+
+        return entityHandle;
     }
+
 
     void MultiplayerRobotSystemComponent::OnPlayerLeave(
         Multiplayer::ConstNetworkEntityHandle entityHandle, [[maybe_unused]] const Multiplayer::ReplicationSet& replicationSet, [[maybe_unused]] AzNetworking::DisconnectReason reason)
