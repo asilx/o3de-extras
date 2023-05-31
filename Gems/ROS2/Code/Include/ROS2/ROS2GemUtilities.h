@@ -14,6 +14,7 @@
 #include <AzToolsFramework/ToolsComponents/GenericComponentWrapper.h>
 #endif
 #include <Multiplayer/Components/NetBindComponent.h>
+#include <Multiplayer/MultiplayerSystemComponentBus.h>
 
 namespace ROS2
 {
@@ -51,6 +52,7 @@ namespace ROS2
         /// @param entity 
         /// @return 
         Multiplayer::NetBindComponent* GetEntityOrAncestorNetBind(const AZ::Entity* entity);
+        AZ::EntityId GetLocalClientId();
 
         bool IsAutonomousOrNonMultiplayer(const AZ::Entity* entity);
 
