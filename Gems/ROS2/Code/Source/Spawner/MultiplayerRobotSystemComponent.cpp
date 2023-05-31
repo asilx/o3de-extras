@@ -124,10 +124,10 @@ namespace MultiplayerRobotSample
         return AZ::TICK_PLACEMENT + 2;
     }
 
-    /*Multiplayer::NetworkEntityHandle MultiplayerRobotSystemComponent::OnPlayerJoin([[maybe_unused]] uint64_t userId, [[maybe_unused]] const Multiplayer::MultiplayerAgentDatum& agentDatum)
+    Multiplayer::NetworkEntityHandle MultiplayerRobotSystemComponent::OnPlayerJoin([[maybe_unused]] uint64_t userId, [[maybe_unused]] const Multiplayer::MultiplayerAgentDatum& agentDatum)
     {
        
-        AZStd::string spawnableName = "MySpawnable"; // Replace "MySpawnable" with the actual spawnable name
+        /*AZStd::string spawnableName = "MySpawnable"; // Replace "MySpawnable" with the actual spawnable name
         AZStd::string spawnPointName = "MySpawnPoint"; // Replace "MySpawnPoint" with the actual spawn point name
 
         auto spawnPoints = GetSpawnPoints();
@@ -175,11 +175,11 @@ namespace MultiplayerRobotSample
 
         // Perform any additional operations for the joined player
 
-        return entityHandle;
+        return entityHandle;*/
 
 
 
-        /*const AZStd::pair<Multiplayer::PrefabEntityId, AZ::Transform> entityParams = AZ::Interface<IPlayerSpawner>::Get()->GetNextPlayerSpawn();
+        const AZStd::pair<Multiplayer::PrefabEntityId, AZ::Transform> entityParams = AZ::Interface<IPlayerSpawner>::Get()->GetNextPlayerSpawn();
 
         Multiplayer::INetworkEntityManager::EntityList entityList = Multiplayer::GetNetworkEntityManager()->CreateEntitiesImmediate(
             entityParams.first, Multiplayer::NetEntityRole::Authority, entityParams.second);
@@ -196,7 +196,7 @@ namespace MultiplayerRobotSample
         }
 
         return controlledEntity;
-    }*/
+    }
 
     Multiplayer::NetworkEntityHandle MyMultiplayerGemExtension::OnPlayerJoin(uint64_t userId, const Multiplayer::MultiplayerAgentDatum& agentDatum)
     {
