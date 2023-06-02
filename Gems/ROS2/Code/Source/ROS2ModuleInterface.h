@@ -30,7 +30,8 @@
 #include <RobotControl/ROS2RobotControlComponent.h>
 #include <RobotImporter/ROS2RobotImporterSystemComponent.h>
 #include <Spawner/ROS2SpawnPointComponent.h>
-#include <Spawner/ROS2SpawnerComponent.h>
+//#include <Spawner/ROS2SpawnerComponent.h>
+#include <Spawner/ROS2NetworkSpawnerComponent.h>
 #include <VehicleDynamics/ModelComponents/AckermannModelComponent.h>
 #include <VehicleDynamics/ModelComponents/SkidSteeringModelComponent.h>
 #include <VehicleDynamics/VehicleModelComponent.h>
@@ -70,7 +71,8 @@ namespace ROS2
                     RigidBodyTwistControlComponent::CreateDescriptor(),
                     SkidSteeringControlComponent::CreateDescriptor(),
                     ROS2CameraSensorComponent::CreateDescriptor(),
-                    ROS2SpawnerComponent::CreateDescriptor(),
+                    //ROS2SpawnerComponent::CreateDescriptor(),
+                    ROS2NetworkSpawnerComponent::CreateDescriptor(),
                     ROS2SpawnPointComponent::CreateDescriptor(),
                     VehicleDynamics::AckermannVehicleModelComponent::CreateDescriptor(),
                     VehicleDynamics::WheelControllerComponent::CreateDescriptor(),

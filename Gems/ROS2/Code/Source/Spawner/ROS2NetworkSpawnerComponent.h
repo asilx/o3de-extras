@@ -7,6 +7,8 @@
  */
 #pragma once
 
+#include <string>
+
 #include "ROS2SpawnPointComponent.h"
 #include <AzCore/Asset/AssetCommon.h>
 #include <AzCore/Asset/AssetSerializer.h>
@@ -18,6 +20,7 @@
 #include <gazebo_msgs/srv/get_model_state.hpp>
 #include <gazebo_msgs/srv/get_world_properties.hpp>
 #include <gazebo_msgs/srv/spawn_entity.hpp>
+#include <huawei_msgs/srv/network_spawn.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 // network based spawning
@@ -71,7 +74,9 @@ namespace ROS2
         AZ::Transform m_defaultSpawnPose = { AZ::Vector3{ 0, 0, 0 }, AZ::Quaternion{ 0, 0, 0, 1 }, 1.0 };
 
         void GetAvailableSpawnableNames(const GetAvailableSpawnableNamesRequest request, GetAvailableSpawnableNamesResponse response);
-        void SpawnEntity(const SpawnEntityRequest request, SpawnEntityResponse response);
+        //void NetworkSpawn_Server(const NetworkSpawnRequest request, NetworkSpawnResponse response);
+        //void NetworkSpawn_Client(const NetworkSpawnRequest request, NetworkSpawnResponse response);
+        void NetworkSpawn(const NetworkSpawnRequest request, NetworkSpawnResponse response);
         void PreSpawn(
             AzFramework::EntitySpawnTicket::Id,
             AzFramework::SpawnableEntityContainerView,
