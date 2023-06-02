@@ -32,6 +32,8 @@ namespace ROS2
     using GetAvailableSpawnableNamesResponse = std::shared_ptr<gazebo_msgs::srv::GetWorldProperties::Response>;
     using SpawnEntityRequest = std::shared_ptr<gazebo_msgs::srv::SpawnEntity::Request>;
     using SpawnEntityResponse = std::shared_ptr<gazebo_msgs::srv::SpawnEntity::Response>;
+    using NetworkSpawnRequest = std::shared_ptr<huawei_msgs::srv::NetworkSpawn::Request>;
+    using NetworkSpawnResponse = std::shared_ptr<huawei_msgs::srv::NetworkSpawn::Response>;
     using GetSpawnPointInfoRequest = std::shared_ptr<gazebo_msgs::srv::GetModelState::Request>;
     using GetSpawnPointInfoResponse = std::shared_ptr<gazebo_msgs::srv::GetModelState::Response>;
     using GetSpawnPointsNamesRequest = std::shared_ptr<gazebo_msgs::srv::GetWorldProperties::Request>;
@@ -39,16 +41,16 @@ namespace ROS2
 
     //! Manages robots spawning.
     //! Allows user to set spawnable prefabs in the Editor and spawn them using ROS2 service during the simulation.
-    class ROS2SpawnerComponent
+    class ROS2NetworkSpawnerComponent
         : public AZ::Component
         , public SpawnerRequestsBus::Handler
     {
     public:
-        AZ_COMPONENT(ROS2SpawnerComponent, "{5950AC6B-75F3-4E0F-BA5C-17C877013710}", AZ::Component, SpawnerRequestsBus::Handler);
+        AZ_COMPONENT(ROS2NetworkSpawnerComponent, "{5950AC6B-75F3-4E0F-BA5C-17C877013710}", AZ::Component, SpawnerRequestsBus::Handler);
 
         // AZ::Component interface implementation.
-        ROS2SpawnerComponent() = default;
-        ~ROS2SpawnerComponent() = default;
+        ROS2NetworkSpawnerComponent() = default;
+        ~ROS2NetworkSpawnerComponent() = default;
         //////////////////////////////////////////////////////////////////////////
         // Component overrides
         void Activate() override;

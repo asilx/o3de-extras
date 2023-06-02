@@ -6,7 +6,7 @@
  *
  */
 
-#include "ROS2SpawnerComponent.h"
+#include "ROS2NetworkSpawnerComponent.h"
 #include <AzCore/Serialization/EditContext.h>
 #include <AzCore/Serialization/SerializeContext.h>
 #include <AzFramework/Spawnable/Spawnable.h>
@@ -19,7 +19,7 @@
 namespace ROS2
 {
 
-    void ROS2SpawnerComponent::Activate()
+    void ROS2NetworkSpawnerComponent::Activate()
     {
         auto ros2Node = ROS2Interface::Get()->GetNode();
 
@@ -56,7 +56,7 @@ namespace ROS2
         
     }
 
-    void ROS2SpawnerComponent::Deactivate()
+    void ROS2NetworkSpawnerComponent::Deactivate()
     {
         
         m_getSpawnablesNamesService.reset();
@@ -66,32 +66,32 @@ namespace ROS2
 
     }
 
-    void ROS2SpawnerComponent::Reflect(AZ::ReflectContext* context)
+    void ROS2NetworkSpawnerComponent::Reflect(AZ::ReflectContext* context)
     {
         if (AZ::SerializeContext* serialize = azrtti_cast<AZ::SerializeContext*>(context))
         {
-            serialize->Class<ROS2SpawnerComponent, AZ::Component>()
+            serialize->Class<ROS2NetworkSpawnerComponent, AZ::Component>()
                 ->Version(1)
-                ->Field("Spawnables", &ROS2SpawnerComponent::m_spawnables)
-                ->Field("Default spawn point", &ROS2SpawnerComponent::m_defaultSpawnPose);
+                ->Field("Spawnables", &ROS2NetworkSpawnerComponent::m_spawnables)
+                ->Field("Default spawn point", &ROS2NetworkSpawnerComponent::m_defaultSpawnPose);
 
             if (AZ::EditContext* ec = serialize->GetEditContext())
             {
-                ec->Class<ROS2SpawnerComponent>("ROS2 Spawner", "Spawner component")
+                ec->Class<ROS2NetworkSpawnerComponent>("ROS2 Spawner", "Spawner component")
                     ->ClassElement(AZ::Edit::ClassElements::EditorData, "Manages spawning of robots in configurable locations")
                     ->Attribute(AZ::Edit::Attributes::AppearsInAddComponentMenu, AZ_CRC_CE("Game"))
                     ->Attribute(AZ::Edit::Attributes::Category, "ROS2")
-                    ->DataElement(AZ::Edit::UIHandlers::EntityId, &ROS2SpawnerComponent::m_spawnables, "Spawnables", "Spawnables")
+                    ->DataElement(AZ::Edit::UIHandlers::EntityId, &ROS2NetworkSpawnerComponent::m_spawnables, "Spawnables", "Spawnables")
                     ->DataElement(
                         AZ::Edit::UIHandlers::EntityId,
-                        &ROS2SpawnerComponent::m_defaultSpawnPose,
+                        &ROS2NetworkSpawnerComponent::m_defaultSpawnPose,
                         "Default spawn pose",
                         "Default spawn pose");
             }
         }
     }
 
-    void ROS2SpawnerComponent::GetAvailableSpawnableNames(
+    void ROS2NetworkSpawnerComponent::GetAvailableSpawnableNames(
         const GetAvailableSpawnableNamesRequest request, GetAvailableSpawnableNamesResponse response)
     {
         for (const auto& spawnable : m_spawnables)
@@ -100,8 +100,14 @@ namespace ROS2
         }
     }
 
+<<<<<<< HEAD
     //void ROS2SpawnerComponent::NetworkSpawn_Server(const NetworkSpawnRequest request, NetworkSpawnResponse response)
     void ROS2SpawnerComponent::NetworkSpawn(const NetworkSpawnRequest request, NetworkSpawnResponse response)
+=======
+
+    //void ROS2NetworkSpawnerComponent::NetworkSpawn_Server(const NetworkSpawnRequest request, NetworkSpawnResponse response)
+    void ROS2NetworkSpawnerComponent::NetworkSpawn(const NetworkSpawnRequest request, NetworkSpawnResponse response)
+>>>>>>> b678b60 (fixes for build)
     {
         // Extract the necessary data from the network request
         AZStd::string spawnableName(request->name.c_str());
@@ -176,7 +182,12 @@ namespace ROS2
         response->success = true;
     }
 
+<<<<<<< HEAD
     /*void ROS2SpawnerComponent::NetworkSpawn_Client(const NetworkSpawnRequest request, NetworkSpawnResponse response)
+=======
+
+    /*void ROS2NetworkSpawnerComponent::NetworkSpawn_Client(const NetworkSpawnRequest request, NetworkSpawnResponse response)
+>>>>>>> b678b60 (fixes for build)
     {
         AZStd::string spawnableName(request->name.c_str());
         AZStd::string spawnPointName(request->spawn_point.c_str(), request->spawn_point.size());
@@ -230,11 +241,11 @@ namespace ROS2
         spawner->SpawnAllEntities(m_tickets.at(spawnableName), optionalArgs);
 
         response->success = true;
+
     }*/
 
 
-
-    void ROS2SpawnerComponent::PreSpawn(
+    void ROS2NetworkSpawnerComponent::PreSpawn(
         AzFramework::EntitySpawnTicket::Id id [[maybe_unused]],
         AzFramework::SpawnableEntityContainerView view,
         const AZ::Transform& transform,
@@ -261,12 +272,12 @@ namespace ROS2
         }
     }
 
-    const AZ::Transform& ROS2SpawnerComponent::GetDefaultSpawnPose() const
+    const AZ::Transform& ROS2NetworkSpawnerComponent::GetDefaultSpawnPose() const
     {
         return m_defaultSpawnPose;
     }
 
-    void ROS2SpawnerComponent::GetSpawnPointsNames(
+    void ROS2NetworkSpawnerComponent::GetSpawnPointsNames(
         const ROS2::GetSpawnPointsNamesRequest request, ROS2::GetSpawnPointsNamesResponse response)
     {
         for (auto spawnPoint : GetSpawnPoints())
@@ -275,7 +286,7 @@ namespace ROS2
         }
     }
 
-    void ROS2SpawnerComponent::GetSpawnPointInfo(const ROS2::GetSpawnPointInfoRequest request, ROS2::GetSpawnPointInfoResponse response)
+    void ROS2NetworkSpawnerComponent::GetSpawnPointInfo(const ROS2::GetSpawnPointInfoRequest request, ROS2::GetSpawnPointInfoResponse response)
     {
         const AZStd::string_view key(request->model_name.c_str(), request->model_name.size());
 
@@ -292,7 +303,7 @@ namespace ROS2
         }
     }
 
-    AZStd::unordered_map<AZStd::string, SpawnPointInfo> ROS2SpawnerComponent::GetSpawnPoints()
+    AZStd::unordered_map<AZStd::string, SpawnPointInfo> ROS2NetworkSpawnerComponent::GetSpawnPoints()
     {
         AZStd::vector<AZ::EntityId> children;
         AZ::TransformBus::EventResult(children, GetEntityId(), &AZ::TransformBus::Events::GetChildren);
