@@ -74,6 +74,21 @@ namespace ROS2
         }
         return true; // Non-multiplayer: No NetBindComponent, so no multiplayer entity in the hierarchy           
     }
+    
+    
+    /*bool ROS2SpawnerComponent::IsServer() const
+    {
+        // Check if the current application instance is running as the server
+        // This example assumes the presence of a network manager or similar system
+        // Get the multiplayer system component
+        auto* multiplayerSystemComponent = AZ::Interface<Multiplayer::MultiplayerSystemComponent>::Get();
+        if (multiplayerSystemComponent)
+        {
+           // Check if this is a dedicated server
+           return multiplayerSystemComponent->IsDedicated();
+        }
+        return false;
+    }*/
 
     /*AZ::EntityId GetLocalClientId()
     {

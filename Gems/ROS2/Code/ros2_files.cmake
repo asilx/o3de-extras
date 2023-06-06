@@ -73,6 +73,8 @@ set(FILES
         Source/Sensor/SensorConfiguration.cpp
         Source/Spawner/ROS2SpawnerComponent.cpp
         Source/Spawner/ROS2SpawnerComponent.h
+        Source/Spawner/ROS2NetworkSpawnerComponent.cpp
+        Source/Spawner/ROS2NetworkSpawnerComponent.h
         Source/Spawner/ROS2SpawnPointComponent.cpp
         Source/Spawner/ROS2SpawnPointComponent.h
         Source/Utilities/Controllers/PidConfiguration.cpp

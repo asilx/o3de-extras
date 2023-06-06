@@ -53,7 +53,9 @@ namespace ROS2
         /// @return 
         Multiplayer::NetBindComponent* GetEntityOrAncestorNetBind(const AZ::Entity* entity);
 
+
 	//AZ::EntityId GetLocalClientId();
+	//bool IsServer();
         bool IsAutonomousOrNonMultiplayer(const AZ::Entity* entity);
 
     } // namespace Utils

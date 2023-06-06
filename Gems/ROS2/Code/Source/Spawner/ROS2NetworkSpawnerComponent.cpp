@@ -21,49 +21,52 @@ namespace ROS2
 
     void ROS2NetworkSpawnerComponent::Activate()
     {
+    
+#if defined(AZ_TRAIT_SERVER)    
         auto ros2Node = ROS2Interface::Get()->GetNode();
 
 
-        std::string entityIdString = std::to_string(ROS2::Utils::GetLocalClientId());
+        //std::string entityIdString = std::to_string(ROS2::Utils::GetLocalClientId());
 
         m_getSpawnablesNamesService = ros2Node->create_service<gazebo_msgs::srv::GetWorldProperties>(
-            entityIdString + "/get_available_spawnable_names",
+            /*entityIdString +*/ "get_available_spawnable_names",
             [this](const GetAvailableSpawnableNamesRequest request, GetAvailableSpawnableNamesResponse response)
             {
                 GetAvailableSpawnableNames(request, response);
             });
 
-        m_spawnService = ros2Node->create_service<gazebo_msgs::srv::NetworkSpawn>(
-            entityIdString + "/network_spawn",
-            [this](const SpawnEntityRequest request, SpawnEntityResponse response)
+        m_spawnService = ros2Node->create_service<huawei_msgs::srv::NetworkSpawn>(
+            /*entityIdString +*/ "network_spawn",
+            [this](const NetworkSpawnRequest request, NetworkSpawnResponse response)
             {
                 NetworkSpawn(request, response);
             });
 
         m_getSpawnPointInfoService = ros2Node->create_service<gazebo_msgs::srv::GetModelState>(
-            entityIdString + "/get_spawn_point_info",
+            /*entityIdString +*/ "get_spawn_point_info",
             [this](const GetSpawnPointInfoRequest request, GetSpawnPointInfoResponse response)
             {
                 GetSpawnPointInfo(request, response);
             });
 
         m_getSpawnPointsNamesService = ros2Node->create_service<gazebo_msgs::srv::GetWorldProperties>(
-            entityIdString + "/get_spawn_points_names",
+            /*entityIdString +*/ "get_spawn_points_names",
             [this](const GetSpawnPointsNamesRequest request, GetSpawnPointsNamesResponse response)
             {
                 GetSpawnPointsNames(request, response);
             });
-        
+#endif        
     }
 
     void ROS2NetworkSpawnerComponent::Deactivate()
     {
-        
+    
+#if defined(AZ_TRAIT_SERVER)         
         m_getSpawnablesNamesService.reset();
         m_spawnService.reset();
         m_getSpawnPointInfoService.reset();
         m_getSpawnPointsNamesService.reset();
-
+#endif
     }
 
     void ROS2NetworkSpawnerComponent::Reflect(AZ::ReflectContext* context)
@@ -100,15 +103,11 @@ namespace ROS2
         }
     }
 
-<<<<<<< HEAD
-    //void ROS2SpawnerComponent::NetworkSpawn_Server(const NetworkSpawnRequest request, NetworkSpawnResponse response)
-    void ROS2SpawnerComponent::NetworkSpawn(const NetworkSpawnRequest request, NetworkSpawnResponse response)
-=======
 
     //void ROS2NetworkSpawnerComponent::NetworkSpawn_Server(const NetworkSpawnRequest request, NetworkSpawnResponse response)
     void ROS2NetworkSpawnerComponent::NetworkSpawn(const NetworkSpawnRequest request, NetworkSpawnResponse response)
->>>>>>> b678b60 (fixes for build)
     {
+#if defined(AZ_TRAIT_SERVER)
         // Extract the necessary data from the network request
         AZStd::string spawnableName(request->name.c_str());
         AZStd::string spawnPointName(request->spawn_point.c_str(), request->spawn_point.size());
@@ -125,14 +124,14 @@ namespace ROS2
 
         // Perform authority checks to ensure only the correct client or server can trigger the spawn
 
-        if (!HasAuthority())
+        /*if (!ROS2::Utils::IsServer())
         {
             // If this function is called on a client that doesn't have authority,
             // you might want to forward the request to the server or display an error message.
             response->success = false;
             response->status_message = "Cannot spawn entity without authority.";
             return;
-        }
+        }*/
 
         // If the spawnable ticket doesn't exist, create it
         if (!m_tickets.contains(spawnableName))
@@ -180,14 +179,11 @@ namespace ROS2
 
         // Set the response indicating a successful spawn
         response->success = true;
+#endif
     }
 
-<<<<<<< HEAD
-    /*void ROS2SpawnerComponent::NetworkSpawn_Client(const NetworkSpawnRequest request, NetworkSpawnResponse response)
-=======
 
     /*void ROS2NetworkSpawnerComponent::NetworkSpawn_Client(const NetworkSpawnRequest request, NetworkSpawnResponse response)
->>>>>>> b678b60 (fixes for build)
     {
         AZStd::string spawnableName(request->name.c_str());
         AZStd::string spawnPointName(request->spawn_point.c_str(), request->spawn_point.size());
