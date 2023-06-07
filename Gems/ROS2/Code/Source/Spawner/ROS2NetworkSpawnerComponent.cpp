@@ -97,10 +97,12 @@ namespace ROS2
     void ROS2NetworkSpawnerComponent::GetAvailableSpawnableNames(
         const GetAvailableSpawnableNamesRequest request, GetAvailableSpawnableNamesResponse response)
     {
+#if defined(AZ_TRAIT_SERVER)    
         for (const auto& spawnable : m_spawnables)
         {
             response->model_names.emplace_back(spawnable.first.c_str());
         }
+#endif        
     }
 
 
@@ -276,14 +278,17 @@ namespace ROS2
     void ROS2NetworkSpawnerComponent::GetSpawnPointsNames(
         const ROS2::GetSpawnPointsNamesRequest request, ROS2::GetSpawnPointsNamesResponse response)
     {
+#if defined(AZ_TRAIT_SERVER)    
         for (auto spawnPoint : GetSpawnPoints())
         {
             response->model_names.emplace_back(spawnPoint.first.c_str());
         }
+#endif        
     }
 
     void ROS2NetworkSpawnerComponent::GetSpawnPointInfo(const ROS2::GetSpawnPointInfoRequest request, ROS2::GetSpawnPointInfoResponse response)
     {
+#if defined(AZ_TRAIT_SERVER)    
         const AZStd::string_view key(request->model_name.c_str(), request->model_name.size());
 
         auto spawnPoints = GetSpawnPoints();
@@ -297,6 +302,7 @@ namespace ROS2
         {
             response->status_message = "Could not find spawn point with given name: " + request->model_name;
         }
+#endif        
     }
 
     AZStd::unordered_map<AZStd::string, SpawnPointInfo> ROS2NetworkSpawnerComponent::GetSpawnPoints()
